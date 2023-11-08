@@ -1,43 +1,20 @@
+"""colopal.py: colors & palettes"""
 import re
 from typing import Tuple, Union
 from pprint import pprint
 
 ColorTupleType = Tuple[int, int, int]
 
-
-def is_hex_color_pattern_match(color: str):
-    # checks if color meets spec "#rrggbb"
-    return re.match(r"#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})", color)
-
-
-def is_rgb_color_pattern_match(color: str):
-    # checks if color meets spec "(rrr, ggg, bbb)"
-    return re.match(
-        "\(([0-9]{1-3})(\s*),(\s*)([0-9]{1-3})(\s*),(\s*)([0-9]{1-3})\)", color
-    )
-
-
-def is_rgb_color(color: Union[ColorTupleType, str]):
-    # checks if color meets spec (rrr, ggg, bbb) where
-    # rrr, ggg, bbb are ints in range (0, 255)
-    def in_color_range(clr):
-        return (clr >= 0) and (clr <= 255)
-
-    if isinstance(color, tuple):
-        r, g, b = color
-        return in_color_range(r) and in_color_range(b) and in_color_range(g)
-    else:
-        # # color is "(rrr, ggg, bbb)"
-        # color = color.strip()
-        # if not color.startswith("(") and color.endswith(")"):
-        #     return False
-        # r, g, b = color[1 : len(color) - 1].split(",")
-        # return (
-        #     in_color_range(int(r)) and in_color_range(int(g)) and in_color_range(int(b))
-        # )
-        match = re.match(
-            "\(([0-9]{1-3})(\s*),(\s*)([0-9]{1-3})(\s*),(\s*)([0-9]{1-3})\)", color
-        )
+# favourite color palette
+FAV_COLORS = [
+    "#64E6FF",
+    "#007DC5",
+    "#4D2F9E",
+    "#BE0046",
+    "#EB5000",
+    "#FFE600",
+    "#02D46A",
+]
 
 
 def hex2rgb(color: str) -> str:
@@ -53,14 +30,16 @@ def rgb2hex(color: Union[ColorTupleType, str]):
     # rgb_color is like (r,g,b) [tuple of ints] or "rgb(r,g,b)", returns "#rrggbb"
     if isinstance(color, tuple):
         r, g, b = color
-        return f"#{str(hex(r))[2:]}{str(hex(g))[2:]}{str(hex(b))[2:]}"
+        # return f"#{str(hex(r))[2:]}{str(hex(g))[2:]}{str(hex(b))[2:]}"
+        return f"#{r:02x}{g:02x}{b:02x}"
     else:
         pattern = re.compile(r"rgb\((?:(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*)\)")
         match = re.match(pattern, color)
         if match:
             r, g, b = match.group(1), match.group(2), match.group(3)
             return (
-                f"#{str(hex(int(r)))[2:]}{str(hex(int(g)))[2:]}{str(hex(int(b)))[2:]}"
+                # f"#{str(hex(int(r)))[2:]}{str(hex(int(g)))[2:]}{str(hex(int(b)))[2:]}"
+                f"#{int(r):02x}{int(g):02x}{int(b):02x}"
             )
         raise TypeError(f"{color} does not confirm to rgb(...) color format!")
 
@@ -73,7 +52,7 @@ def convert_string_color_to_hex(color):
         return None
 
 
-def get_rgb_from_color(color):
+def __get_rgb_from_color(color):
     """get individual colors from color pattern
     @params:
         color - the color to parse
@@ -118,7 +97,7 @@ def lighten_color(color, factor, return_as_hex=True):
         str: The lightened color.
     """
 
-    r, g, b = get_rgb_from_color(color)
+    r, g, b = __get_rgb_from_color(color)
     r = int(255 - (255 - r) * (1 - factor))
     g = int(255 - (255 - g) * (1 - factor))
     b = int(255 - (255 - b) * (1 - factor))
@@ -143,7 +122,7 @@ def darken_color(color, factor, return_as_hex=True):
         str: The lightened color.
     """
 
-    r, g, b = get_rgb_from_color(color)
+    r, g, b = __get_rgb_from_color(color)
     r = int(r * factor)
     g = int(g * factor)
     b = int(b * factor)
