@@ -7,3 +7,5 @@ statsmodels
 streamlit
 pprintpp
 nltk
+emoji
+
