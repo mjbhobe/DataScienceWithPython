@@ -7,3 +7,7 @@ statsmodels
 streamlit
 pprintpp
 nltk
+emoji
+xgboost
+yfinance
+
